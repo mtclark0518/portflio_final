@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>tyler clark || development portfolio</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	  	<link rel="stylesheet" href="css/reset.css">
+	  	<link rel="stylesheet" href="css/jquery.fullpage.css">
+	  	<link rel="stylesheet" href="css/styles.css">
+	</head>
+
+
+	<body>
+
+
+		<header>
+		  <div class="header-top clearfix">
+		    <h1 class="l-left"><a href="#firstSection">Your Logo</a></h1>
+		    <a class="l-right toggle-menu" href="#">
+		      <i></i>
+		      <i></i>
+		      <i></i>
+		    </a>
+		  </div>
+
+
+		  <nav class="hide">
+		    <ul id="menu">
+
+		      <li data-menuanchor="secondSection">
+		        <a href="#secondSection" title="Second Section">Portfolio</a>
+		      </li>
+		      <li data-menuanchor="thirdSection">
+		        <a href="#thirdSection" title="Second Section">About</a>
+		      </li>
+		      <li data-menuanchor="fourthSection">
+		        <a href="#fourthSection" title="Fourth Section">Contact</a>
+		      </li>
+
+		    </ul>
+		  </nav>	<!-- navigation -->
+		</header>	<!-- header -->
+
+
+		<div id="fullpage">
+		  <section id="landing" class="vertical-scrolling">
+		    <h2>fullPage.js</h2>
+		    <h3>This is the first section</h3>
+		    <div class="scroll-icon">
+		      <p>jump to contact</p>
+		      <a href="#fourthSection" class="icon-up-open-big"></a>
+		    </div>
+		  </section>
+
+		  <section id="portfolio" class="vertical-scrolling">
+			<div id="portfolio-content">
+				<ul class="portfolio-list">
+					<li class="portfolio-item">
+							<div id="proj1">
+								<div id='proj1-span'>
+									<span>this is the span</span>
+								</div>
+							</div>
+					</li>
+					<li id="proj2" class="portfolio-item">
+						<div id="proj2">
+							<div id='proj2-span'>
+								<span>this is the span</span>
+							</div>
+						</div>
+					</li>
+					<li id="proj3" class="portfolio-item">
+						<div id="proj3">
+							<div id='proj3-span'>
+								this is the span
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+
+		  </section>
+		  <section id="about" class="vertical-scrolling">
+		  	<div id="about-head"></div>
+		  	<div id="about-container">
+			    <div id="about-img" class="l-left">
+			    	<div class="img-frame"></div>
+			    </div>
+			    <div id="about-content" class="l-right">
+			    	<div id="about-content-container">
+			    		<h3>about me</h3>
+			    		<hr class="about-hr">
+			    		<p>
+			    			tesxta;dlkfjald;kfjal;sdkjf;alkdsfj;laksdfj;laksdfj;laksdjf
+			    			<br>
+			    			laksdjf;laksdjf;lakj
+			    			<br>
+			    			sdf;lkajsd;lfkajsd;lfkjasdl;fkjasl;dkjf;alsdkfjl;askdjf;laksdfa;lsdkfj
+			    			<br>
+			    			thats all
+			    		</p>
+			    		<h3>development</h3>
+			    		<hr class="about-hr">
+			    		<div class="about-dev-container">
+			    			<div class="about-dev-item">1</div>
+			    			<div class="about-dev-item">2</div>
+			    			<div class="about-dev-item">3</div>
+			    		</div>
+			    	</div>
+			    </div>
+		    </div>
+		  </section>
+		  <section id="contact" class="vertical-scrolling">
+		    <h2>fullPage.js</h2> 
+		    <h3>This is the fourth section</h3>
+		    <footer>
+		    	footer
+		    </footer>
+		  </section>
+
+		</div> 	<!-- fullpage -->
+
+
+	<!-- scripts -->
+	
+		<script
+		  src="https://code.jquery.com/jquery-3.2.1.min.js"
+		  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+		  crossorigin="anonymous"></script>
+		<script type="text/javascript" src="scripts/jquery.fullpage.min.js"></script>
+		<script type="text/javascript" src="scripts/app.js"></script>
+	</body>
+</html>
