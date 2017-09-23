@@ -236,15 +236,25 @@ section#landing {
     width: 480px;
     height: 480px;
     margin: auto;
-    background: black;
+    background: rgba(0, 0, 0, 1);
     border: 2px solid black;
+    transition: all 4000ms ease-in-out;
+}
+
+#landing-canvas-outer:hover {
+    width: 480px;
+    height: 480px;
+    margin: auto;
+    background: rgba(0, 0, 0, 0.31);
+    border: 2px solid black;
+    transition: all 4000ms ease-in-out;
 }
 
 #landing-canvas-inner {
     width: 470px;
     height: 470px;
     margin: auto;
-    border: 5px solid white;
+    border: 5px solid grey;
     color: red;
 }
 
