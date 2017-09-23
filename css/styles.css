@@ -229,7 +229,7 @@ h3 {
 
 section#landing {
     background: white;
-    background: linear-gradient(to bottom, rgba(12, 17, 25, 1.0), rgba(211, 255, 204, 1.0));
+    background: linear-gradient(to bottom, rgba(12, 17, 25, 1.0), rgba(0, 134, 255, 1.0));
 }
 
 
@@ -238,7 +238,7 @@ section#landing {
 
 section#portfolio {
     background: rgba(199, 58, 79, 1.0);
-    background: linear-gradient(to bottom, rgba(211, 255, 204, 1.0), rgba(12, 17, 25, 1.0));
+    background: linear-gradient(to bottom, rgba(0, 134, 255, 1.0), rgba(12, 17, 25, 1.0));
 }
 
 div#portfolio-content {
@@ -341,7 +341,7 @@ div#about-container {
 }
 
 div#about-img {
-    width: 50%;
+    width: 40%;
     background: green;
     height: 100%;
 }
@@ -353,8 +353,14 @@ div#about-img {
 }
 
 div#about-content {
-    width: 50%;
+    width: 60%;
     height: 100%;
+}
+
+div.about-blurb {
+    font-size: 16px;
+    color: #0B1019;
+    line-height: 20px;
 }
 
 div#about-content-container {
@@ -476,25 +482,31 @@ button.contact-btn {
 }
 
 .about-dev-item {
-    width: 100px;
+    width: 70px;
     display: inline-block;
     margin: 0 15px;
 }
 
 .icon-dev {
-    max-width: 150px;
-    max-height: 150px;
+    max-width: 100px;
+    max-height: 100px;
 }
 
 .about-vibes-item {
     width: 100px;
     display: inline-block;
-    margin: 0 15px;
+    margin: 0 10px;
 }
 
 .icon-vibe {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 65px;
+    max-height: 45px;
+}
+
+.icon-about-connect {
+    max-width: 15px;
+    max-height: 10px;
+    vertical-align: middle;
 }
 
 .icon-logo {
