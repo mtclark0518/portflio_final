@@ -63,7 +63,7 @@ body {
 
 a {
     text-decoration: none;
-    color: white;
+    color: rgba(0, 134, 255, 1.0);
 }
 
 ul,
@@ -232,6 +232,23 @@ section#landing {
     background: linear-gradient(to bottom, rgba(12, 17, 25, 1.0), rgba(0, 134, 255, 1.0));
 }
 
+#landing-canvas-outer{
+	width: 480px;
+    height: 480px;
+    margin: auto;
+	background: black;
+		border: 2px solid black;
+
+}
+#landing-canvas-inner{
+	width: 470px;
+    height: 470px;
+    margin: auto;
+	border: 5px solid white;
+	color: red;
+
+}
+
 
 /* SECTION STYLES - portfolio
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -323,7 +340,7 @@ div#proj3-span:hover {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 section#about {
-    background: #DCDEE3;
+    background: #E5E5E5;
 }
 
 div#about-head {
@@ -505,7 +522,7 @@ button.contact-btn {
 
 .icon-about-connect {
     max-width: 15px;
-    max-height: 10px;
+    max-height: 15px;
     vertical-align: middle;
 }
 
