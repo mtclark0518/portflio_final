@@ -232,21 +232,20 @@ section#landing {
     background: linear-gradient(to bottom, rgba(12, 17, 25, 1.0), rgba(0, 134, 255, 1.0));
 }
 
-#landing-canvas-outer{
-	width: 480px;
+#landing-canvas-outer {
+    width: 480px;
     height: 480px;
     margin: auto;
-	background: black;
-		border: 2px solid black;
-
+    background: black;
+    border: 2px solid black;
 }
-#landing-canvas-inner{
-	width: 470px;
+
+#landing-canvas-inner {
+    width: 470px;
     height: 470px;
     margin: auto;
-	border: 5px solid white;
-	color: red;
-
+    border: 5px solid white;
+    color: red;
 }
 
 
