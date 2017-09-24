@@ -9,29 +9,16 @@
 </head>
 
 <body>
-    <h1>createMediaElementSource example</h1>
 
     <input type="file" id='audioFile'>
-
     <input type="button" id="playbtn" value="play">
-    <input type="button" id="pausebtn" value="pause">
     <input type="button" id="stopbtn" value="stop">
 
-    <input type="button" id="mutebtn" value="mute">
 
-    <div>
-        <label for="amount">Volume:</label>
-        <input type="text" id="amount">
-    </div>
-
+    <input type="text" id="amount" style="display: none;">
     <div id="slider-vertical" style="height:200px;"></div>
 
-    <!-- <audio controls>  
-      <source src="./assets/bb.mp3" type="audio/mp3">   
-      <p>Browser too old to support HTML5 audio? How depressing!</p>
-    </audio>
-     
-    <pre></pre> -->
+
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <script src='app.js'></script>
