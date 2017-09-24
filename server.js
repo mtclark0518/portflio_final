@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const router = express.Router();
 const nodemailer = require('nodemailer');
-
+const gmailPass = require('./gmail.auth');
 app.use(bodyParser.urlencoded({ extended:true }));
 app.use(bodyParser.json());
 app.use(morgan("dev"));
@@ -19,38 +19,35 @@ app.get('/', (req, res) => {
 app.post('/', function(req, res) {
     console.log('coming from the post request');
     console.log(req.body);
-    // const mailOptions;
-    // const transporter;
 
-    // transporter = nodemailer.createTransport('smtp',{
-    // // host: 'smtp.gmail.com',
-    // // port: '465',
-    // // secure: true,
-    // service: 'gmail',
-    // auth: {
-    //     user: 'mtclark0518@gmail.com',
-    //     pass: 'Rustydog'
-    // }
-    // });
-    // mailOptions = {
-    // from: 'mtclark0518@gmail.com',
-    // to: 'mtclark0518@gmail.com',
-    // subject: 'sent from my computer code',
-    // text: 'this is a test'
-    // };
+    let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'mtclark0518@gmail.com',
+        pass: gmailPass
+    }
+    });
+    let mailOptions = {
+    from: req.body.email,
+    to: 'mtclark0518@gmail.com',
+    subject: 'contact form submission',
+    text: req.body.message
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log('error: ' + error)
+        }
+        console.log('success');
+        console.log(info);
+        res.send(info);
+    });
 });
 
 
 
 
 
-// transporter.sendMail(mailOptions, (error, info) => {
-//     if (error) {
-//         return console.log('error: ' + error)
-//     }
-//     console.log('success');
-//     console.log(info);
-// })
+
 
 
 
