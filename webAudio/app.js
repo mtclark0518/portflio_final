@@ -1,13 +1,16 @@
 var playButton = $('#playbtn');
 var input = $('#audioFile');
+var muteButton = $('#mutebtn');
+var stopButton = $('#stopbtn');
 
 var audioContext = new (window.AudioContext || window.webKitAudioContext)(); // Our audio context
 var source = null; // This is the BufferSource containing the buffered audio
+var gainNode = audioContext.createGain();
+
   
 // Used the File API in order to asynchronously obtain the bytes of the file that the user selected in the 
 // file input box. The bytes are returned using a callback method that passes the resulting ArrayBuffer. 
 function createArrayBuffer(selectedFile, callback) {
-
     var reader = new FileReader(); 
     reader.onload = function (ev) {
         // The FileReader returns us the bytes from the computer's file system as an ArrayBuffer  
@@ -17,7 +20,7 @@ function createArrayBuffer(selectedFile, callback) {
     reader.readAsArrayBuffer(selectedFile);
 }
  
-function decodeArrayBufferAndPlay(mp3ArrayBuffer) {
+function decodeArrayBuffer(mp3ArrayBuffer) {
       
     // The AudioContext will asynchronously decode the bytes in the ArrayBuffer for us and return us
     // the decoded samples in an AudioBuffer object.  
@@ -33,53 +36,85 @@ function decodeArrayBufferAndPlay(mp3ArrayBuffer) {
         // an AudioBufferSourceNode object. This object will stream the audio samples to any other 
         // AudioNode or AudioDestinationNode object. 
         source = audioContext.createBufferSource();
-        source.buffer = decodedAudioData; // set the buffer to play to our audio buffer
-        source.connect(audioContext.destination); // connect the source to the output destinarion 
-        source.start(0); // tell the audio buffer to play from the beginning
+        source.buffer = decodedAudioData;
+        playAudio();
+
     }); 
 }
+function playAudio(){
+        // set the buffer to play to our audio buffer
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination); // connect the source to the output destinarion 
+        source.start(0); // tell the audio buffer to play from the beginning
+}
+
+function stopPlayback(){
+  if (source !== null) {
+    gainNode.disconnect(AudioContext.destination);
+    source = null;
+  }
+}
+
+function toggleMute(){
+  // gainNode.gain.value = 0;
+  console.log('toggleMute bitch');
+}
+
+
+
+$(document).ready(function(){
+
 
 // Assign event handler for when the 'Play' button is clicked
 $(playButton).click(function(event) {
     event.stopPropagation();
-      
     // I've added two basic validation checks here, but in a real world use case you'd probably be a little more stringient. 
     // Be aware that Firefox uses 'audio/mpeg' as the MP3 MIME type, Chrome uses 'audio/mp3'. 
     var fileInput = input[0];
     console.log(fileInput); 
     if (fileInput.files.length > 0 && ["audio/mpeg", "audio/mp3"].includes(fileInput.files[0].type)) {
           
-        // We're using the File API to obtain the MP3 bytes, here but they could also come from an XMLHttpRequest 
         // object that has downloaded an MP3 file from the internet, or any other ArrayBuffer containing MP3 data. 
         createArrayBuffer(fileInput.files[0], function (mp3ArrayBuffer) {
             
             // Pass the ArrayBuffer to the decode method
-            decodeArrayBufferAndPlay(mp3ArrayBuffer);              
+            decodeArrayBuffer(mp3ArrayBuffer);              
         });  
     } 
     else alert("Error! No attached file or attached file was of the wrong type!");
 });
 
-
-// var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-// var source = audioCtx.createBufferSource();
-// var request = new XMLHttpRequest();
-// request.open('GET', 'file://assets/bb.mp3', true);
-// request.responseType = 'arraybuffer';
-// request.onload = function() {
-//   audioCtx.decodeAudioData(request.response, function(buffer) {
-//     source.buffer = buffer;
-//     source.connect(audioCtx.destination);
-//     source.loop = true;
-//     source.start(0);
-//   }, function(error) {
-//       console.log('error: ' + error);
-//   });
-// };
-// request.send();
+// mute function to store value and set new value;
+  $(muteButton).click(function(e) {
+    e.preventDefault();
+    toggleMute();
+  });
 
 
+  $(stopButton).click(function(e) {
+    stopPlayback();
+  });
 
+
+  $("#slider-vertical" ).slider({
+      orientation: "vertical",
+      range: "min",
+      min: 0,
+      max: 100,
+      value: 60,
+      slide: function( event, ui ) {
+        let volume = $("#amount").val( ui.value );
+        let gain = volume[0].value/100;
+        gainNode.gain.value = gain;
+      }
+  });
+  $( "#amount" ).val( $( "#slider-vertical" ).slider( "value" ) );
+
+
+
+
+
+});
 
 // var testAudio = document.querySelector('audio');
 // const fileReader = new FileReader();
@@ -97,7 +132,6 @@ $(playButton).click(function(event) {
 //   console.log(newData);
 // });
 // console.log(testDecode)
-// var mute = document.getElementsByClassName('mute');
 
 // var buffer = audioCtx.createBuffer
 // // var source = audioCtx.createMediaElementSource(testAudio)
@@ -106,15 +140,7 @@ $(playButton).click(function(event) {
 // source.connect(gainNode);
 // gainNode.connect(audioCtx.destination);
 
-// $('.mute').click(function(e) {
-//   e.preventDefault();
-//   toggleMute();
-// });
 
-// function toggleMute(){
-//   gainNode.gain.value = 0;
-//   console.log('toggleMute bitch');
-// }
 
 // function random(number1,number2) {
 //   var randomNo = number1 + (Math.floor(Math.random() * (number2 - number1)) + 1);
