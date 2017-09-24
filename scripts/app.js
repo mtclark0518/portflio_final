@@ -3,15 +3,12 @@
 var $header_top = $('.header-top');
 var $nav = $('nav');
 
-
-
 // toggle menu 
 $header_top.find('a').on('click', function() {
   $(this).parent().toggleClass('open-menu');
 });
 
  
-
 // fullpage customization
 $('#fullpage').fullpage({
   sectionSelector: '.vertical-scrolling',
@@ -34,3 +31,30 @@ $('#fullpage').fullpage({
     }
   },
 }); 
+
+
+
+// ajax calls to submit contact form
+$(document).ready( () => {
+  Contact = function(){
+    this.name = $('#contact-name').val();
+    this.email = $('#contact-email').val();
+    this.message = $('#contact-message').val();
+  };
+  $('#form-submit').click(function(e) {
+    e.preventDefault();
+    let newContact = new Contact();
+    let contact = JSON.stringify(newContact);
+    console.log(contact);
+
+    $.ajax({
+      url: '/',
+      method: 'POST',
+      data: contact,
+      success: function(data){
+        console.log('inside the success post function');
+        console.log(data);
+      }
+    });
+  });
+});
