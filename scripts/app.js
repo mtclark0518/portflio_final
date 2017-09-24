@@ -50,6 +50,7 @@ $(document).ready( () => {
     $.ajax({
       url: '/',
       method: 'POST',
+      contentType: 'application/json',
       data: contact,
       success: function(data){
         console.log('inside the success post function');

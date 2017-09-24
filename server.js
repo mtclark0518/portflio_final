@@ -1,19 +1,22 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 
 app.use(bodyParser.urlencoded({ extended:true }));
 app.use(bodyParser.json());
+app.use(morgan("dev"));
 
+app.set('views', 'public');
 app.set('view engine', 'html');
 app.use(express.static(__dirname));
 
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
-router.post('/', function(req, res) {
+app.post('/', function(req, res) {
     console.log('coming from the post request');
     console.log(req.body);
     // const mailOptions;
