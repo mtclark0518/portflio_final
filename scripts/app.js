@@ -43,6 +43,7 @@ $(document).ready( () => {
   };
   $('#form-submit').click(function(e) {
     e.preventDefault();
+    $('.icon-scroll').addClass('sending');
     let newContact = new Contact();
     let contact = JSON.stringify(newContact);
     console.log(contact);
@@ -55,6 +56,11 @@ $(document).ready( () => {
       success: function(data){
         console.log('inside the success post function');
         console.log(data);
+        $('#contact-name').val('');
+        $('#contact-email').val('');
+        $('#contact-message').val('');
+
+        $('.icon-scroll').removeClass('sending').addClass('sent');
       }
     });
   });
