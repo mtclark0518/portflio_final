@@ -34,20 +34,21 @@ $('#fullpage').fullpage({
 
 
 
-// ajax calls to submit contact form
 $(document).ready( () => {
   Contact = function(){
     this.name = $('#contact-name').val();
     this.email = $('#contact-email').val();
     this.message = $('#contact-message').val();
   };
+
+//someone clicks button to contact
   $('#form-submit').click(function(e) {
     e.preventDefault();
     $('.icon-scroll').addClass('sending');
     let newContact = new Contact();
     let contact = JSON.stringify(newContact);
     console.log(contact);
-
+// ajax calls to submit contact form
     $.ajax({
       url: '/',
       method: 'POST',
@@ -56,6 +57,8 @@ $(document).ready( () => {
       success: function(data){
         console.log('inside the success post function');
         console.log(data);
+        
+        // reset form values
         $('#contact-name').val('');
         $('#contact-email').val('');
         $('#contact-message').val('');
