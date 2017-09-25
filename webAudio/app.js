@@ -30,22 +30,24 @@ var effectSend2 = audioContext.createGain();
 var delayNode = audioContext.createDelay(); //s1
 var reverbNode = audioContext.createConvolver(); //s2
 
+
+// creating the equalizer filters
 var low = audioContext.createBiquadFilter();
 low.type = "lowshelf";
-low.frequency.value = 320.0;
+low.frequency.value = 300.0;
 low.gain.value = 0.0;
 
 
 var mid = audioContext.createBiquadFilter();
 mid.type = "peaking";
-mid.frequency.value = 1000.0;
+mid.frequency.value = 1350.0;
 mid.Q.value = 0.5;
 mid.gain.value = 0.0;
 
 
 var high = audioContext.createBiquadFilter();
 high.type = "highshelf";
-high.frequency.value = 3200.0;
+high.frequency.value = 4000.0;
 high.gain.value = 0.0;
 
 var filter = audioContext.createBiquadFilter();
@@ -55,7 +57,7 @@ filter.type = "lowpass";
 
 
 function connectMixer(){
-    source.connect(filter).connect(high).connect(mid).connect(low).connect(mainGain).connect(compressorNode).connect(masterGain).connect(audioContext.destination);
+    source.connect(low).connect(mid).connect(high).connect(filter).connect(mainGain).connect(compressorNode).connect(masterGain).connect(audioContext.destination);
     source.connect(effect1Gain).connect(delayNode).connect(effectSend1).connect(compressorNode);
     source.connect(effect2Gain).connect(reverbNode).connect(effectSend2).connect(compressorNode);
     analyserNode.connect(compressorNode);
@@ -107,9 +109,19 @@ function toggleMute(){
   // masterGain.gain.value = 0;
   console.log('toggleMute bitch');
 }
-
-
-
+function createEQSlider(name, type, input){
+    let mySlider = $(name).slider({
+        range: 'min',
+        min: -12,
+        max: 12,
+        value: 0,
+        slide: function(event, ui) {
+            let eq = $(name).slider('value');
+            type.gain.value = eq;
+        }
+    });
+    return mySlider;
+}
 $(document).ready(function(){
 
     // volume slider
@@ -118,7 +130,7 @@ $(document).ready(function(){
         range: "min",
         min: 0,
         max: 100,
-        value: 60,
+        value: 50,
         slide: function( event, ui ) {
             let volume = $("#amount").val( ui.value );
             let gain = volume[0].value/100;
@@ -141,6 +153,11 @@ $(document).ready(function(){
             }
     });
     $( "#tempo-input" ).val( $( "#tempo-slider" ).slider( "value" ) );
+    
+    //eq sliders
+    createEQSlider('#low-slider', low, '#low-input');
+    createEQSlider('#mid-slider', mid, '#mid-input');
+    createEQSlider('#high-slider', high, '#high-input');
 
 
 // Assign event handler for when the 'Play' button is clicked
