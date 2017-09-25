@@ -3,20 +3,73 @@ var input = $('#audioFile');
 var muteButton = $('#mutebtn');
 var stopButton = $('#stopbtn');
 
+
+
 var audioContext = new (window.AudioContext || window.webKitAudioContext)(); // Our audio context
 var source = null; // This is the BufferSource containing the buffered audio
-var gainNode = audioContext.createGain();
 
-  
+//create our mixer
+
+// the 'outgoing' signal
+var masterGain = audioContext.createGain();
+//compressing sound for quality
+var compressorNode = audioContext.createDynamicsCompressor();
+//analyzes audio context
+var analyserNode = audioContext.createAnalyser();
+
+// source gains
+// main gain
+var mainGain = audioContext.createGain();
+var effect1Gain = audioContext.createGain();
+var effect2Gain = audioContext.createGain();
+// send effects for the source
+var effectSend1 = audioContext.createGain();
+var effectSend2 = audioContext.createGain();
+
+
+var delayNode = audioContext.createDelay(); //s1
+var reverbNode = audioContext.createConvolver(); //s2
+
+var low = audioContext.createBiquadFilter();
+low.type = "lowshelf";
+low.frequency.value = 320.0;
+low.gain.value = 0.0;
+
+
+var mid = audioContext.createBiquadFilter();
+mid.type = "peaking";
+mid.frequency.value = 1000.0;
+mid.Q.value = 0.5;
+mid.gain.value = 0.0;
+
+
+var high = audioContext.createBiquadFilter();
+high.type = "highshelf";
+high.frequency.value = 3200.0;
+high.gain.value = 0.0;
+
+var filter = audioContext.createBiquadFilter();
+filter.frequency.value = 20000.0;
+filter.type = "lowpass";
+
+
+
+function connectMixer(){
+    source.connect(filter).connect(high).connect(mid).connect(low).connect(mainGain).connect(compressorNode).connect(masterGain).connect(audioContext.destination);
+    source.connect(effect1Gain).connect(delayNode).connect(effectSend1).connect(compressorNode);
+    source.connect(effect2Gain).connect(reverbNode).connect(effectSend2).connect(compressorNode);
+    analyserNode.connect(compressorNode);
+    source.start(0); // tell the audio buffer to play from the beginning
+}
 // Used the File API in order to asynchronously obtain the bytes of the file that the user selected in the 
 // file input box. The bytes are returned using a callback method that passes the resulting ArrayBuffer. 
 function createArrayBuffer(selectedFile, callback) {
     var reader = new FileReader(); 
-    reader.onload = function (ev) {
+    reader.onload = function (event) {
         // The FileReader returns us the bytes from the computer's file system as an ArrayBuffer  
         var mp3ArrayBuffer = reader.result; 
         callback(mp3ArrayBuffer); 
-    }
+    };
     reader.readAsArrayBuffer(selectedFile);
 }
  
@@ -27,42 +80,67 @@ function decodeArrayBuffer(mp3ArrayBuffer) {
     audioContext.decodeAudioData(mp3ArrayBuffer, function (decodedAudioData) {
               
         // Clear any existing audio source that we might be using
-        if (source != null) {
-            source.disconnect(audioContext.destination);
-            source = null; // Leave existing source to garbage collection
+        if (source !== null) {
+            source.disconnect(masterGain);
+            source = null; 
         } 
-          
-        // In order to play the decoded samples contained in the audio buffer we need to wrap them in  
-        // an AudioBufferSourceNode object. This object will stream the audio samples to any other 
-        // AudioNode or AudioDestinationNode object. 
         source = audioContext.createBufferSource();
         source.buffer = decodedAudioData;
-        playAudio();
+        console.log('test ine');
+        console.log(source.playbackRate.value)
+        connectMixer();
 
     }); 
 }
-function playAudio(){
-        // set the buffer to play to our audio buffer
-        source.connect(gainNode);
-        gainNode.connect(audioContext.destination); // connect the source to the output destinarion 
-        source.start(0); // tell the audio buffer to play from the beginning
-}
+
 
 function stopPlayback(){
   if (source !== null) {
-    gainNode.disconnect(AudioContext.destination);
+    source.disconnect(delayNode);
+    console.log('disconnected');
     source = null;
   }
 }
 
 function toggleMute(){
-  // gainNode.gain.value = 0;
+
+  // masterGain.gain.value = 0;
   console.log('toggleMute bitch');
 }
 
 
 
 $(document).ready(function(){
+
+    // volume slider
+    $("#master-gain" ).slider({
+        orientation: "vertical",
+        range: "min",
+        min: 0,
+        max: 100,
+        value: 60,
+        slide: function( event, ui ) {
+            let volume = $("#amount").val( ui.value );
+            let gain = volume[0].value/100;
+            masterGain.gain.value = gain;
+        }
+    });
+    $( "#amount" ).val( $( "#slider-vertical" ).slider( "value" ) );
+    
+    $("#tempo-slider" ).slider({
+        orientation: "vertical",
+        range: "min",
+        min: 0,
+        max: 2,
+        value: 1,
+        step: 0.01,
+        slide: function( event, ui ) {
+            let tempo = $("#tempo-slider").slider("value");
+            console.log(tempo);
+            source.playbackRate.value = tempo;
+            }
+    });
+    $( "#tempo-input" ).val( $( "#tempo-slider" ).slider( "value" ) );
 
 
 // Assign event handler for when the 'Play' button is clicked
@@ -85,148 +163,21 @@ $(playButton).click(function(event) {
 });
 
 // mute function to store value and set new value;
-  $(muteButton).click(function(e) {
-    e.preventDefault();
+  $(muteButton).click(function(event) {
+    event.preventDefault();
     toggleMute();
   });
 
 
-  $(stopButton).click(function(e) {
+  $(stopButton).click(function(event) {
     stopPlayback();
   });
 
 
-  $("#slider-vertical" ).slider({
-      orientation: "vertical",
-      range: "min",
-      min: 0,
-      max: 100,
-      value: 60,
-      slide: function( event, ui ) {
-        let volume = $("#amount").val( ui.value );
-        let gain = volume[0].value/100;
-        gainNode.gain.value = gain;
-      }
-  });
-  $( "#amount" ).val( $( "#slider-vertical" ).slider( "value" ) );
+
 
 
 
 
 
 });
-
-// var testAudio = document.querySelector('audio');
-// const fileReader = new FileReader();
-// console.log(fileReader);
-// let blob = new Blob([testAudio],{type: 'audio/mp3'});
-// console.log(blob)
-
-// let testFR = fileReader.readAsArrayBuffer(blob);
-// console.log(testFR)
-
-
-// console.log(testAudio);
-
-// var testDecode = audioCtx.decodeAudioData(testAudio).then(function(newData) {
-//   console.log(newData);
-// });
-// console.log(testDecode)
-
-// var buffer = audioCtx.createBuffer
-// // var source = audioCtx.createMediaElementSource(testAudio)
-// var gainNode = audioCtx.createGain();
-
-// source.connect(gainNode);
-// gainNode.connect(audioCtx.destination);
-
-
-
-// function random(number1,number2) {
-//   var randomNo = number1 + (Math.floor(Math.random() * (number2 - number1)) + 1);
-//   return randomNo;
-// }
-
-// var canvas = document.querySelector('.canvas');
-// canvas.width = WIDTH;
-// canvas.height = HEIGHT;
-
-// var canvasCtx = canvas.getContext('2d');
-
-// function canvasDraw() {
-//   rX = CurX;
-//   rY = CurY;
-//   rC = Math.floor((gainNode.gain.value/maxVol)*30);
- 
-//   canvasCtx.globalAlpha = 0.2;
- 
-//   for(i=1;i<=15;i=i+2) {
-//     canvasCtx.beginPath();
-//     canvasCtx.fillStyle = 'rgb(' + 100+(i*10) + ',' + Math.floor((gainNode.gain.value/maxVol)*255) + ',' + Math.floor((oscillator.frequency.value/maxFreq)*255) + ')';
-//     canvasCtx.arc(rX+random(0,50),rY+random(0,50),rC/2+i,(Math.PI/180)*0,(Math.PI/180)*360,false);
-//     canvasCtx.fill();
-//     canvasCtx.closePath();     
-//   }    
-// }
-
-
-// // Create the source.
-// var source = context.createBufferSource();
-// // Create the gain node.
-// var gain = context.createGain();
-// // Connect source to filter, filter to destination.
-// source.connect(gain);
-// gain.connect(context.destination);
-
-// source.disconnect(0);
-// gain.disconnect(0);
-// source.connect(context.destination);
-
-// // to load an audio sample
-// var request = new XMLHttpRequest();
-// request.open('GET', url, true);
-// request.responseType = 'arraybuffer';
-
-// // Decode asynchronously
-// request.onload = function() {
-//   context.decodeAudioData(request.response, function(theBuffer) {
-//     buffer = theBuffer;
-//   }, onError);
-// }
-// request.send();
-
-// // create an audio buffer source node
-// function playSound(buffer) {
-//   var source = context.createBufferSource();
-//   source.buffer = buffer;
-//   source.connect(context.destination);
-//   source.start(0);
-// }
-
-// (function () {
-//   'use strict';
-
-//   const URL = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/Yodel_Sound_Effect.mp3';
-    
-//   const context = new AudioContext();
-//   const playButton = document.querySelector('#play');
-    
-//   let yodelBuffer;
-
-//   window.fetch(URL)
-//     .then(response => response.arrayBuffer())
-//     .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
-//     .then(audioBuffer => {
-//       playButton.disabled = false;
-//       yodelBuffer = audioBuffer;
-//     });
-    
-//     playButton.onclick = () => play(yodelBuffer);
-
-//   function play(audioBuffer) {
-//     const source = context.createBufferSource();
-//     source.buffer = audioBuffer;
-//     source.connect(context.destination);
-//     source.start();
-//   }
-// }());
