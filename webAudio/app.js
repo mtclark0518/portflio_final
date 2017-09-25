@@ -57,7 +57,7 @@ filter.type = "lowpass";
 
 
 function connectMixer(){
-    source.connect(low).connect(mid).connect(high).connect(filter).connect(mainGain).connect(compressorNode).connect(masterGain).connect(audioContext.destination);
+    source.connect(low).connect(mid).connect(high).connect(mainGain).connect(compressorNode).connect(masterGain).connect(audioContext.destination);
     source.connect(effect1Gain).connect(delayNode).connect(effectSend1).connect(compressorNode);
     source.connect(effect2Gain).connect(reverbNode).connect(effectSend2).connect(compressorNode);
     analyserNode.connect(compressorNode);
