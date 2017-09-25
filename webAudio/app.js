@@ -40,20 +40,15 @@ low.gain.value = 0.0;
 
 var mid = audioContext.createBiquadFilter();
 mid.type = "peaking";
-mid.frequency.value = 1350.0;
+mid.frequency.value = 1000.0;
 mid.Q.value = 0.5;
 mid.gain.value = 0.0;
 
 
 var high = audioContext.createBiquadFilter();
 high.type = "highshelf";
-high.frequency.value = 4000.0;
+high.frequency.value = 1800.0;
 high.gain.value = 0.0;
-
-var filter = audioContext.createBiquadFilter();
-filter.frequency.value = 20000.0;
-filter.type = "lowpass";
-
 
 
 function connectMixer(){
