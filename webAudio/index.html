@@ -6,36 +6,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="jquery.ui.css">
+    <link rel="stylesheet" href="webAudio.css">
 </head>
 
 <body>
-    <div class="input-container">
-        <input type="file" id='audioFile'>
-        <input type="button" id="playbtn" value="play">
-        <input type="button" id="stopbtn" value="stop">
-    </div>
-    <div class="input-container">
+    <div class="wrapper">
+        <canvas id="visualizer" width="250" height="150"></canvas>
+        <div class="input-container">
+            <input type="file" id='audioFile'>
+            <input type="button" id="playbtn" value="play">
+            <input type="button" id="stopbtn" value="stop">
+        </div>
+        <div class="input-container">
 
-        <label for="">master
+            <label for="">master
     <input type="text" id="amount"></label>
-        <div id="master-gain" style="height:200px;"></div>
+            <div id="master-gain" style="height:200px;"></div>
 
-        <label for="">tempo
+            <label for="">tempo
     <input type="text" id="tempo-input"></label>
-        <div id="tempo-slider" style="height:200px;"></div>
-    </div>
-    <div class="input-container">
-        <label for="">low
+            <div id="tempo-slider" style="height:200px;"></div>
+        </div>
+        <div class="input-container">
+            <label for="">low
     <input type="text" id="low-input"></label>
-        <div id="low-slider" style="width:200px;"></div>
-        <label for="">mid
+            <div id="low-slider" style="width:200px;"></div>
+            <label for="">mid
     <input type="text" id="mid-input"></label>
-        <div id="mid-slider" style="width:200px;"></div>
-        <label for="">high
+            <div id="mid-slider" style="width:200px;"></div>
+            <label for="">high
     <input type="text" id="high-input"></label>
-        <div id="high-slider" style="width:200px;"></div>
+            <div id="high-slider" style="width:200px;"></div>
+        </div>
     </div>
-
 
 
 
