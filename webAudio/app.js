@@ -3,7 +3,6 @@ var input = $('#audioFile');
 var muteButton = $('#mutebtn');
 var stopButton = $('#stopbtn');
 
-
 var audioContext = new (window.AudioContext || window.webKitAudioContext)(); // Our audio context
 var source = null; // This is the BufferSource containing the buffered audio
 
@@ -17,11 +16,12 @@ var masterGain = audioContext.createGain();
 var compressorNode = audioContext.createDynamicsCompressor();
 //analyzes audio context
 var analyserNode = audioContext.createAnalyser();
-analyserNode.minDecibels = -90;
-analyserNode.maxDecibels = -10;
-analyserNode.smoothingTimeConstant = 0.85;
+// analyserNode.minDecibels = -90;
+// analyserNode.maxDecibels = -10;
+// analyserNode.smoothingTimeConstant = 0.85;
 // source gains
 // main gain
+var sourceGain = audioContext.createGain();
 var mainGain = audioContext.createGain();
 var effect1Gain = audioContext.createGain();
 var effect2Gain = audioContext.createGain();
@@ -63,7 +63,7 @@ function visualize() {
     console.log('width = ' +  WIDTH);
     canvasContext.clearRect(0, 0, WIDTH, HEIGHT);
 
-    analyserNode.fftSize =512;
+    analyserNode.fftSize =128;
     var bufferLength = analyserNode.frequencyBinCount;
     console.log(analyserNode.fftSize);
     console.log(bufferLength);
@@ -79,9 +79,9 @@ function visualize() {
         // console.log(analyserNode.getByteFrequencyData(dataArray));
         canvasContext.fillStyle = 'rgb(0, 0, 0)';
         canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
-        canvasContext.lineWidth = 2;
-            canvasContext.strokeStyle = 'rgb(255,0,0)';
-            canvasContext.beginPath();
+        canvasContext.lineWidth = 3;
+        canvasContext.strokeStyle = 'rgb(255,0,0)';
+        canvasContext.beginPath();
         const sliceWidth = WIDTH * 1.0 / bufferLength;
         let x = 0;
         
@@ -115,9 +115,9 @@ function visualize() {
     draw();
 }
 function connectMixer(){
-    source.connect(analyserNode).connect(low).connect(mid).connect(high).connect(mainGain).connect(compressorNode).connect(masterGain).connect(audioContext.destination);
-    source.connect(effect1Gain).connect(delayNode).connect(effectSend1).connect(compressorNode);
-    source.connect(effect2Gain).connect(reverbNode).connect(effectSend2).connect(compressorNode);
+    source.connect(sourceGain).connect(low).connect(mid).connect(high).connect(mainGain).connect(compressorNode).connect(analyserNode).connect(masterGain).connect(audioContext.destination);
+    high.connect(effect1Gain).connect(delayNode).connect(effectSend1).connect(compressorNode);
+    high.connect(effect2Gain).connect(reverbNode).connect(effectSend2).connect(compressorNode);
     
     source.start(0); // tell the audio buffer to play from the beginning
 }
@@ -132,16 +132,12 @@ function createArrayBuffer(selectedFile, callback) {
     };
     reader.readAsArrayBuffer(selectedFile);
 }
- 
 function decodeArrayBuffer(mp3ArrayBuffer) {
-      
-    // The AudioContext will asynchronously decode the bytes in the ArrayBuffer for us and return us
-    // the decoded samples in an AudioBuffer object.  
     audioContext.decodeAudioData(mp3ArrayBuffer, function (decodedAudioData) {
               
         // Clear any existing audio source that we might be using
         if (source !== null) {
-            source.disconnect(masterGain);
+            source.disconnect(sourceGain);
             source = null; 
         } 
         source = audioContext.createBufferSource();
@@ -149,16 +145,13 @@ function decodeArrayBuffer(mp3ArrayBuffer) {
         console.log(source.playbackRate.value)
         connectMixer();
         visualize();
-
     }); 
 }
 
 
 function stopPlayback(){
   if (source !== null) {
-    source.disconnect(analyserNode);
-    source.disconnect(effect1Gain);
-    source.disconnect(effect2Gain);
+    source.disconnect(sourceGain);
     console.log('disconnected');
     source = null;
   }
@@ -169,36 +162,71 @@ function toggleMute(){
   // masterGain.gain.value = 0;
   console.log('toggleMute bitch');
 }
-function createEQSlider(name, type, input){
-    let mySlider = $(name).slider({
-        range: 'min',
-        min: -12,
-        max: 12,
-        value: 0,
-        slide: function(event, ui) {
-            let eq = $(name).slider('value');
-            type.gain.value = eq;
+    // $("#master-gain" ).slider({
+    //     orientation: "vertical",
+    //     range: "min",
+    //     min: 0,
+    //     max: 100,
+    //     value: 50,
+    //     slide: function( event, ui ) {
+    //         let volume = $("#amount").val( ui.value );
+    //         let gain = volume[0].value/100;
+    //         masterGain.gain.value = gain;
+    //     }
+    // });
+function createEffectControl(controlName, elemID, inputValueID, orientation, range, min, max, initValue, step ){
+    $(elemID).slider({
+        orientation : orientation,
+        range : range,
+        min : min,
+        max : max,
+        value : initValue,
+        step : step,
+        slide : function(event, ui) {
+            let input = $(inputValueID).val(ui.value);
+            let val = input[0].value;
+            controlName.gain.value = val;
         }
     });
-    return mySlider;
+}
+
+
+function createRoundSlider(name, type, input, sliderType, radius, width, min, max, initValue, step, stAngle, endAngle){
+    $(name).roundSlider({
+        sliderType: sliderType,
+        radius: radius,
+        width: width,
+        min: min,
+        max: max,
+        value: initValue,
+        step: step,
+        startAngle: stAngle,
+        endAngle: endAngle,
+        mouseScrollAction: true,
+        change: function(event){
+            let eq = $(name).data('roundSlider');
+            type.gain.value = eq.option('value');
+        }
+    });
 }
 $(document).ready(function(){
-
-    // volume slider
-    $("#master-gain" ).slider({
-        orientation: "vertical",
-        range: "min",
-        min: 0,
-        max: 100,
-        value: 50,
-        slide: function( event, ui ) {
-            let volume = $("#amount").val( ui.value );
-            let gain = volume[0].value/100;
-            masterGain.gain.value = gain;
-        }
-    });
-    $( "#amount" ).val( $( "#slider-vertical" ).slider( "value" ) );
+    //creates gain controls
+    createEffectControl(masterGain, '#master-gain', '#amount', 'vertical', 'min', 0, 1, 5, 0.1);
+    createEffectControl(sourceGain, '#source-gain', '#source-input', 'vertical', 'min', 0, 1, 1, 0.1);
+    createEffectControl(mainGain, '#main-gain', '#main-input', 'horizontal', 'min', 0, 1, 5, 0.1);
     
+    //create round sliders
+    // function createRoundSlider(name, type, input, sliderType, min, max, initValue, step, stAngle, endAngle){
+
+    createRoundSlider('#low-slider', low, '#low-input', 'min-range', 30, 10, -12, 12, 0, 0.2, 315, 225);
+    createRoundSlider('#mid-slider', mid, '#mid-input', 'min-range', 30, 10, -12, 12, 0, 0.2, 315, 225);
+    createRoundSlider('#high-slider', high, '#high-input', 'min-range', 30, 10, -12, 12, 0, 0.2, 315, 225);
+    createRoundSlider('#effect1-gain', effect1Gain, '#effect1-input', 'min-range', 30, 15, 0, 1, 0, 0.01, 270);
+    createRoundSlider('#effect1-send', effectSend1, '#effect1send-input', 'min-range', 30, 15, 0, 1, 0, 0.01, 270);
+    createRoundSlider('#effect2-gain', effect2Gain, '#effect2-input', 'min-range', 30, 15, 0, 1, 0, 0.01, 270);
+    createRoundSlider('#effect2-send', effectSend2, '#effect2send-input', 'min-range', 30, 15, 0, 1, 0, 0.01, 270);
+
+    // create tempo slide from the source playbackRate
     $("#tempo-slider" ).slider({
         orientation: "vertical",
         range: "min",
@@ -214,10 +242,6 @@ $(document).ready(function(){
     });
     $( "#tempo-input" ).val( $( "#tempo-slider" ).slider( "value" ) );
     
-    //eq sliders
-    createEQSlider('#low-slider', low, '#low-input');
-    createEQSlider('#mid-slider', mid, '#mid-input');
-    createEQSlider('#high-slider', high, '#high-input');
 
 
 // Assign event handler for when the 'Play' button is clicked

@@ -1,6 +1,68 @@
-canvas {
+.wrapper {}
+
+.section {}
+
+.element {
+    border: 1px solid black;
+}
+
+#switch-container {
+    display: flex;
+    flex-direction: row;
+    max-height: 300px;
+    /* width: 500px; */
+}
+
+#slide-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 240px;
+}
+
+.slide {
+    flex-grow: 1;
+    height: 75px;
+    width: 240px;
+}
+
+.effect-knob {
+    display: inline-block;
+}
+
+#visualizer-container {}
+
+#delay-effect-container {}
+
+#reverb-effect-container {}
+
+.switch {
+    flex-grow: 1;
+    max-width: 100px;
+    height: 300px
+}
+
+.control-button {
+    display: block;
+}
+
+#play-stop-pause-container {}
+
+#master-gain-container {}
+
+#tempo-slider-container {}
+
+#eq-container {}
+
+#visualizer {
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     margin-bottom: -3px;
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.7), 0 3px 4px rgba(0, 0, 0, 0.7);
+}
+
+input {
+    display: none;
+}
+
+input#audioFile {
+    display: initial;
 }
