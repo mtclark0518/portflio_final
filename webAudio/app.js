@@ -142,7 +142,8 @@ function decodeArrayBuffer(mp3ArrayBuffer) {
         } 
         source = audioContext.createBufferSource();
         source.buffer = decodedAudioData;
-        console.log(source.playbackRate.value)
+        console.log(source.playbackRate.value);
+        source.loop = true;        
         connectMixer();
         visualize();
     }); 
