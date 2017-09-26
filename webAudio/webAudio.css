@@ -1,28 +1,78 @@
-.wrapper {}
+* {
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+}
 
-.section {}
+.wrapper {
+    position: relative;
+    width: 960px;
+    height: 960px;
+    border: 1px solid black;
+    margin: 0 auto;
+}
 
 .element {
     border: 1px solid black;
 }
 
-#switch-container {
-    display: flex;
-    flex-direction: row;
-    max-height: 300px;
-    /* width: 500px; */
+div#top-controls {
+    width: 600px;
+    margin: 10% auto 0;
+    position: relative;
 }
 
-#slide-container {
-    display: flex;
-    flex-direction: column;
-    max-width: 240px;
+div.top {
+    display: inline-block;
 }
 
-.slide {
-    flex-grow: 1;
-    height: 75px;
+div#slide-container {
+    position: absolute;
+    left: 0;
+    width: 250px;
+    height: 400px;
+    border: 1px solid black;
+    margin: auto
+}
+
+div#button-container {
+    position: absolute;
+    right: 0;
+    width: 250px;
+    height: 400px;
+    border: 1px solid black;
+}
+
+ul#switch-container {
+    position: absolute;
+    bottom: 0px;
+    left: 200px;
+    padding: 0;
+    height: 350px;
+    width: 560px;
+    border: 1px solid black;
+}
+
+.cnvBTN {
+    margin: 12px auto;
+}
+
+.cnv {
+    margin: 10px auto 0 30px;
+}
+
+div.slide {
+    height: 100px;
     width: 240px;
+    margin: 20px auto;
+}
+
+li.switch {
+    position: absolute;
+    width: 100px;
+    height: 300px;
+    display: inline-block;
+    margin: 0 auto;
 }
 
 .effect-knob {
@@ -35,28 +85,29 @@
 
 #reverb-effect-container {}
 
-.switch {
-    flex-grow: 1;
-    max-width: 100px;
-    height: 300px
-}
-
 .control-button {
     display: block;
 }
 
-#play-stop-pause-container {}
+#play-stop-pause-container {
+    left: 6%;
+}
 
-#master-gain-container {}
+#master-gain-container {
+    right: 30%;
+}
 
-#tempo-slider-container {}
+#tempo-slider-container {
+    left: 30%;
+}
 
-#eq-container {}
+#eq-container {
+    right: 6%;
+}
 
-#visualizer {
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    margin-bottom: -3px;
+.eq-knob {
+    width: 60px;
+    margin: 15px auto 5px;
 }
 
 input {

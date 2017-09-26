@@ -12,43 +12,51 @@
 
 <body>
     <div class="wrapper">
-        <div id="slide-conatiner" class="section">
-            <div id="visualizer-container" class="slide element">
-                <canvas id="visualizer" class="canvas" width="240" height="75"></canvas>
-            </div>
-            <div id="delay-effect-container" class="slide element">
-                <div class="effect-knob">
-                    <label for="">effect1 gain
-                    <input type="text" id="effect1-input">
-                </label>
-                    <div id="effect1-gain"></div>
+        <div id='top-controls'>
+            <div id="slide-container" class='top'>
+                <div id="visualizer-container" class="slide element">
+                    <canvas id="visualizer" class="canvas" width="240" height="100"></canvas>
                 </div>
-                <div class="effect-knob">
-                    <label for="">effect1 send
-                    <input type="text" id="effect1send-input">
-                </label>
-                    <div id="effect1-send"></div>
-                </div>
-            </div>
-            <div id="reverb-effect-container" class="slide element">
-                <div class="effect-knob">
+                <div id="delay-effect-container" class="slide element">
+                    <div class="effect-knob">
+                        <label for="">effect1 gain</label>
+                        <input type="text" id="effect1-input">
 
-                    <label for="">effect2 gain
-                    <input type="text" id="effect2-input">
-                </label>
-                    <div id="effect2-gain"></div>
+                        <div id="effect1-gain"></div>
+                    </div>
+                    <div class="effect-knob">
+                        <label for="">effect1 send</label>
+                        <input type="text" id="effect1send-input">
+                        <div id="effect1-send"></div>
+                    </div>
                 </div>
-                <div class="effect-knob">
+                <div id="reverb-effect-container" class="slide element">
+                    <div class="effect-knob">
 
-                    <label for="">effect2 send
-                    <input type="text" id="effect2send-input">
-                </label>
-                    <div id="effect2-send"></div>
+                        <label for="">effect2 gain</label>
+                        <input type="text" id="effect2-input">
+                        <div id="effect2-gain"></div>
+                    </div>
+                    <div class="effect-knob">
+
+                        <label for="">effect2 send</label>
+                        <input type="text" id="effect2send-input">
+                        <div id="effect2-send"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="button-container" class="top">
+                <div id="canvas1-container" class="cnvBTN element">
+                    <canvas id="cnvBTN1" class="cnv" width="180" height="150"></canvas>
+                </div>
+                <div id="canvas2-container" class="cnvBTN element">
+                    <canvas id="cnvBTN2" class="cnv" width="180" height="150"></canvas>
                 </div>
             </div>
         </div>
-        <div class="section" id="switch-container">
-            <div id="play-stop-pause-container" class="switch element">
+        <ul id="switch-container">
+            <li id="play-stop-pause-container" class="switch element">
                 <div class="control-button">
                     <input type="file" id='audioFile'>
                 </div>
@@ -58,36 +66,37 @@
                 <div class="control-button">
                     <button type="button" id="stopbtn" value="stop">stop</button>
                 </div>
-            </div>
-            <div id="master-gain-container" class="switch element">
-                <label for="">master
+            </li>
+            <li id="master-gain-container" class="switch element">
+                <label for="">master</label>
                 <input type="text" id="amount">
-            </label>
                 <div id="master-gain" style="height:200px;"></div>
-            </div>
+            </li>
 
-            <div id="tempo-slider-container" class="switch element">
-                <label for="">tempo
-                    <input type="text" id="tempo-input">
-                </label>
+            <li id="tempo-slider-container" class="switch element">
+                <label for="">tempo</label>
+                <input type="text" id="tempo-input">
                 <div id="tempo-slider" style="height:200px;"></div>
-            </div>
+            </li>
 
-            <div id="eq-container" class="switch element">
-                <label for="">low
+            <li id="eq-container" class="switch element">
+                <div class="eq-knob">
+                    <label for="">low</label>
                     <input type="text" id="low-input">
-                </label>
-                <div id="low-slider"></div>
-                <label for="">mid
+                    <div id="low-slider"></div>
+                </div>
+                <div class="eq-knob">
+                    <label for="">mid</label>
                     <input type="text" id="mid-input">
-                </label>
-                <div id="mid-slider"></div>
-                <label for="">high
+                    <div id="mid-slider"></div>
+                </div>
+                <div class="eq-knob">
+                    <label for="">high</label>
                     <input type="text" id="high-input">
-                </label>
-                <div id="high-slider"></div>
-            </div>
-        </div>
+                    <div id="high-slider"></div>
+                </div>
+            </li>
+        </ul>
     </div>
     <!-- <label for="">source gain
         <input type="text" id="source-input">
