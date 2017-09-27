@@ -152,6 +152,7 @@ div#effect2-send {
     height: 20px;
     border-radius: 100%;
     transition: all 1000ms ease;
+    box-shadow: 0 0 15px 2px rgba(246, 253, 234, 1.0);
 }
 
 .inactive {
@@ -159,5 +160,6 @@ div#effect2-send {
     width: 20px;
     height: 20px;
     border-radius: 100%;
-    transition: all 1000ms ease;
+    transition: all 100ms ease;
+    box-shadow: 0 0 0 0 black;
 }
