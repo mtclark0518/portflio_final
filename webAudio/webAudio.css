@@ -135,6 +135,9 @@ div#effect2-send {
     margin: auto;
 }
 
+
+/* VOLUME LED STYLES  */
+
 .powerLED {
     display: flex;
     flex-direction: column-reverse;
