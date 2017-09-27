@@ -135,9 +135,23 @@ div#effect2-send {
     margin: auto;
 }
 
-.LED.inactive {
+.powerLED {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.active {
     background: red;
     width: 20px;
     height: 20px;
     border-radius: 100%;
+    transition: all 150ms ease;
+}
+
+.inactive {
+    background: green;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    transition: all 150ms ease;
 }

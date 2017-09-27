@@ -2,10 +2,8 @@ var playButton = $('#playbtn');
 var input = $('#audioFile');
 var muteButton = $('#mutebtn');
 var stopButton = $('#stopbtn');
-
 var audioContext = new (window.AudioContext || window.webKitAudioContext)(); // Our audio context
 var source = null; // This is the BufferSource containing the buffered audio
-
 
 
 
@@ -197,44 +195,6 @@ function toggleMute(){
   // masterGain.gain.value = 0;
   console.log('toggleMute bitch');
 }
-
-function createEffectControl(controlName, elemID, inputValueID, orientation, range, min, max, initValue, step ){
-    $(elemID).slider({
-        orientation : orientation,
-        range : range,
-        min : min,
-        max : max,
-        value : initValue,
-        step : step,
-        slide : function(event, ui) {
-            let input = $(inputValueID).val(ui.value);
-            let val = input[0].value;
-            controlName.gain.value = val;
-        }
-    });
-}
-function $createLEDContainer(){
-    const powerLED = $('<div>').addClass('powerLED');
-    powerLED.appendTo("body");
-    for(let i = 0; i < 10; i++){
-        let num = i;
-        let min = (num * 10) + 1;
-        let max = (num * 10) + 10;
-        let led = $('<div>').addClass('LED').addClass('inactive').data({"min":min,"max":max});
-        let myLed = led[0];
-        console.log($(myLed).data());
-        $(myLed).appendTo(powerLED);
-        console.log('updated powerLED');
-    }
-    const LEDs = powerLED[0].children;
-    console.log($(LEDs[4]).data());
-}
-function assignLEDValue(){
-    // based on percentage of master gain
-}
-
-
-
 function createRoundSlider(name, type, input, sliderType, radius, width, min, max, initValue, step, stAngle, endAngle){
     $(name).roundSlider({
         sliderType: sliderType,
@@ -253,15 +213,63 @@ function createRoundSlider(name, type, input, sliderType, radius, width, min, ma
         }
     });
 }
+function createEffectControl(controlName, elemID, inputValueID, orientation, range, min, max, initValue, step ){
+    $(elemID).slider({
+        orientation : orientation,
+        range : range,
+        min : min,
+        max : max,
+        value : initValue,
+        step : step,
+        slide : function(event, ui) {
+            let input = $(inputValueID).val(ui.value);
+            let val = input[0].value;
+            controlName.gain.value = val;
+            let myLEDs = $('.powerLED');
+            myLEDs = myLEDs[0].children;
+            isLEDActive(myLEDs);
+        }
+    });
+}
+function $createLEDContainer(){
+    const powerLED = $('<div>').addClass('powerLED');
+    powerLED.appendTo("body");
+    for(let i = 0; i < 10; i++){
+        let min = (i * 10) + 1;
+        let led = $('<div>').addClass('LED').addClass('inactive').data("min", min);
+        led = led[0];
+        $(led).appendTo(powerLED);
+        console.log('updated powerLED');
+    }
+    const LEDs = powerLED[0].children;
+    isLEDActive(LEDs);
+}
+
+function isLEDActive(LEDs) {
+    let amount = masterGain.gain.value * 100;
+    $(LEDs).each(function() {
+        let min = $(this).data().min;
+        console.log(min);
+        if (min <= amount) {
+            $(this).removeClass('inactive').removeClass('active').addClass('active');
+        } else {
+            $(this).removeClass('active').removeClass('inactive').addClass('inactive');
+        }
+    });
+}
+
+
+
 $(document).ready(function(){
+
+
     $createLEDContainer()
     //createEffectControl(controlName, elemID, inputValueID, orientation, range, min, max, initValue, step )
-    createEffectControl(masterGain, '#master-gain', '#amount', 'vertical', 'min', 0, 1, 5, 0.1);
+    createEffectControl(masterGain, '#master-gain', '#amount', 'vertical', 'min', 0, 1, 1, 0.1);
     createEffectControl(sourceGain, '#source-gain', '#source-input', 'vertical', 'min', 0, 1, 1, 0.1);
     createEffectControl(mainGain, '#main-gain', '#main-input', 'horizontal', 'min', 0, 1, 5, 0.1);
-    
-    //create round sliders
-    // function createRoundSlider(name, type, input, sliderType, radius, width, min, max, initValue, step, stAngle, endAngle)
+   
+    //createRoundSlider(name, type, input, sliderType, radius, width, min, max, initValue, step, stAngle, endAngle)
     createRoundSlider('#low-slider', low, '#low-input', 'min-range', 15, 5, -12, 12, 0, 0.2, 315, 225);
     createRoundSlider('#mid-slider', mid, '#mid-input', 'min-range', 15, 5, -12, 12, 0, 0.2, 315, 225);
     createRoundSlider('#high-slider', high, '#high-input', 'min-range', 15, 5, -12, 12, 0, 0.2, 315, 225);
@@ -286,9 +294,7 @@ $(document).ready(function(){
     });
     $( "#tempo-input" ).val( $( "#tempo-slider" ).slider( "value" ) );
     
-
-
-// Assign event handler for when the 'Play' button is clicked
+    // Assign event handler for when the 'Play' button is clicked
     $(playButton).click(function(event) {
         event.stopPropagation();
         // I've added two basic validation checks here, but in a real world use case you'd probably be a little more stringient. 
@@ -313,6 +319,7 @@ $(document).ready(function(){
         toggleMute();
      });
 
+    //event handler for when the "stop button is pushed"
     $(stopButton).click(function(event) {
         stopPlayback();
     });
