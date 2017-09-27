@@ -16,11 +16,10 @@ var masterGain = audioContext.createGain();
 var compressorNode = audioContext.createDynamicsCompressor();
 //analyzes audio context
 var analyserNode = audioContext.createAnalyser();
-// analyserNode.minDecibels = -90;
-// analyserNode.maxDecibels = -10;
-// analyserNode.smoothingTimeConstant = 0.85;
-// source gains
-// main gain
+var analyserNode2 = audioContext.createAnalyser();
+// analyserNode2.minDecibels = -250;
+// analyserNode2.maxDecibels = -30;
+// analyserNode2.smoothingTimeConstant = 0.85;
 var sourceGain = audioContext.createGain();
 var mainGain = audioContext.createGain();
 var effect1Gain = audioContext.createGain();
@@ -49,12 +48,16 @@ high.type = "highshelf";
 high.frequency.value = 1800.0;
 high.gain.value = 0.0;
 
+
+//-------------------------------------------
+//-------------------------------------------
+//CANVAS VISUALIZERS
+//-------------------------------------------
+//-------------------------------------------
 var canvas = $('#visualizer')[0];
 console.log(canvas);
 var canvasContext = canvas.getContext("2d");
-// var intendedWidth = $('.wrapper').clientWidth;
-// console.log(intendedWidth)
-// canvas.setAttribute('width', intendedWidth);
+
 //create our mixer
 function visualize() {
     WIDTH = canvas.width;
@@ -79,7 +82,7 @@ function visualize() {
         // console.log(analyserNode.getByteFrequencyData(dataArray));
         canvasContext.fillStyle = 'rgb(0, 0, 0)';
         canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
-        canvasContext.lineWidth = 3;
+        canvasContext.lineWidth = 2;
         canvasContext.strokeStyle = 'rgb(255,0,0)';
         canvasContext.beginPath();
         const sliceWidth = WIDTH * 1.0 / bufferLength;
@@ -99,26 +102,54 @@ function visualize() {
 
         canvasContext.lineTo(canvas.width, canvas.height/2);
         canvasContext.stroke();
-        // var barWidth = (WIDTH / bufferLength) * 2.5;
-        // var barHeight;
-        // var x = 0;
-
-        // for(var i = 0; i < bufferLength; i++) {
-        //     barHeight = dataArray[i];
-
-        //     canvasContext.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
-        //     canvasContext.fillRect(x,HEIGHT-barHeight/2,barWidth,barHeight/2);
-
-        //     x += barWidth + 1;
-        // }
     }
     draw();
 }
+
+const canvas2 = $('#cnvBTN1')[0];
+console.log(canvas2);
+var canvasCtx2 = canvas2.getContext("2d");
+function visualize2() {
+    WIDTH2 = canvas2.width;
+    HEIGHT2 = canvas2.height;
+    console.log('height = ' +  HEIGHT2);
+    console.log('width = ' +  WIDTH2);
+    canvasCtx2.clearRect(0, 0, WIDTH2, HEIGHT2);
+
+    analyserNode2.fftSize =32;
+    var bufferLength2 = analyserNode2.frequencyBinCount;
+    console.log('buffer length = ' + bufferLength2);
+    var dataArray2 = new Uint8Array(bufferLength2);
+    console.log(dataArray2);
+    
+
+    function draw2() {
+        drawVisual = requestAnimationFrame(draw2);
+        analyserNode.getByteFrequencyData(dataArray2);
+
+        canvasCtx2.fillStyle = 'rgb(0, 0, 0)';
+        canvasCtx2.fillRect(0, 0, WIDTH2, HEIGHT2);
+        canvasCtx2.strokeStyle = 'rgb(0,0,255)';
+        var barWidth = (WIDTH2 / bufferLength2) * 2.5;
+        var barHeight;
+        var x = 0;
+
+        for(var i = 0; i < bufferLength2; i++) {
+            barHeight = dataArray2[i];
+            console.log(dataArray2[i]);
+            canvasCtx2.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+            canvasCtx2.fillRect(x,HEIGHT2-barHeight/2,barWidth,barHeight/2);
+
+            x += barWidth + 1;
+        }
+    }
+    draw2();
+}
 function connectMixer(){
-    source.connect(sourceGain).connect(low).connect(mid).connect(high).connect(mainGain).connect(compressorNode).connect(analyserNode).connect(masterGain).connect(audioContext.destination);
+    source.connect(sourceGain).connect(low).connect(mid).connect(high).connect(mainGain).connect(compressorNode).connect(masterGain).connect(analyserNode).connect(audioContext.destination);
     high.connect(effect1Gain).connect(delayNode).connect(effectSend1).connect(compressorNode);
     high.connect(effect2Gain).connect(reverbNode).connect(effectSend2).connect(compressorNode);
-    
+    analyserNode2.connect(mainGain);
     source.start(0); // tell the audio buffer to play from the beginning
 }
 // Used the File API in order to asynchronously obtain the bytes of the file that the user selected in the 
@@ -137,15 +168,18 @@ function decodeArrayBuffer(mp3ArrayBuffer) {
               
         // Clear any existing audio source that we might be using
         if (source !== null) {
-            source.disconnect(sourceGain);
+            source.disconnect(analyserNode2);
             source = null; 
         } 
         source = audioContext.createBufferSource();
         source.buffer = decodedAudioData;
         console.log(source.playbackRate.value);
         source.loop = true;        
+        
         connectMixer();
         visualize();
+        visualize2();
+        
     }); 
 }
 
@@ -163,18 +197,7 @@ function toggleMute(){
   // masterGain.gain.value = 0;
   console.log('toggleMute bitch');
 }
-    // $("#master-gain" ).slider({
-    //     orientation: "vertical",
-    //     range: "min",
-    //     min: 0,
-    //     max: 100,
-    //     value: 50,
-    //     slide: function( event, ui ) {
-    //         let volume = $("#amount").val( ui.value );
-    //         let gain = volume[0].value/100;
-    //         masterGain.gain.value = gain;
-    //     }
-    // });
+
 function createEffectControl(controlName, elemID, inputValueID, orientation, range, min, max, initValue, step ){
     $(elemID).slider({
         orientation : orientation,
@@ -190,6 +213,26 @@ function createEffectControl(controlName, elemID, inputValueID, orientation, ran
         }
     });
 }
+function $createLEDContainer(){
+    const powerLED = $('<div>').addClass('powerLED');
+    powerLED.appendTo("body");
+    for(let i = 0; i < 10; i++){
+        let num = i;
+        let min = (num * 10) + 1;
+        let max = (num * 10) + 10;
+        let led = $('<div>').addClass('LED').addClass('inactive').data({"min":min,"max":max});
+        let myLed = led[0];
+        console.log($(myLed).data());
+        $(myLed).appendTo(powerLED);
+        console.log('updated powerLED');
+    }
+    const LEDs = powerLED[0].children;
+    console.log($(LEDs[4]).data());
+}
+function assignLEDValue(){
+    // based on percentage of master gain
+}
+
 
 
 function createRoundSlider(name, type, input, sliderType, radius, width, min, max, initValue, step, stAngle, endAngle){
@@ -211,21 +254,21 @@ function createRoundSlider(name, type, input, sliderType, radius, width, min, ma
     });
 }
 $(document).ready(function(){
-    //creates gain controls
+    $createLEDContainer()
+    //createEffectControl(controlName, elemID, inputValueID, orientation, range, min, max, initValue, step )
     createEffectControl(masterGain, '#master-gain', '#amount', 'vertical', 'min', 0, 1, 5, 0.1);
     createEffectControl(sourceGain, '#source-gain', '#source-input', 'vertical', 'min', 0, 1, 1, 0.1);
     createEffectControl(mainGain, '#main-gain', '#main-input', 'horizontal', 'min', 0, 1, 5, 0.1);
     
     //create round sliders
-    // function createRoundSlider(name, type, input, sliderType, min, max, initValue, step, stAngle, endAngle){
-
-    createRoundSlider('#low-slider', low, '#low-input', 'min-range', 30, 10, -12, 12, 0, 0.2, 315, 225);
-    createRoundSlider('#mid-slider', mid, '#mid-input', 'min-range', 30, 10, -12, 12, 0, 0.2, 315, 225);
-    createRoundSlider('#high-slider', high, '#high-input', 'min-range', 30, 10, -12, 12, 0, 0.2, 315, 225);
-    createRoundSlider('#effect1-gain', effect1Gain, '#effect1-input', 'min-range', 30, 15, 0, 1, 0, 0.01, 270);
-    createRoundSlider('#effect1-send', effectSend1, '#effect1send-input', 'min-range', 30, 15, 0, 1, 0, 0.01, 270);
-    createRoundSlider('#effect2-gain', effect2Gain, '#effect2-input', 'min-range', 30, 15, 0, 1, 0, 0.01, 270);
-    createRoundSlider('#effect2-send', effectSend2, '#effect2send-input', 'min-range', 30, 15, 0, 1, 0, 0.01, 270);
+    // function createRoundSlider(name, type, input, sliderType, radius, width, min, max, initValue, step, stAngle, endAngle)
+    createRoundSlider('#low-slider', low, '#low-input', 'min-range', 15, 5, -12, 12, 0, 0.2, 315, 225);
+    createRoundSlider('#mid-slider', mid, '#mid-input', 'min-range', 15, 5, -12, 12, 0, 0.2, 315, 225);
+    createRoundSlider('#high-slider', high, '#high-input', 'min-range', 15, 5, -12, 12, 0, 0.2, 315, 225);
+    createRoundSlider('#effect1-gain', effect1Gain, '#effect1-input', 'min-range', 14, 5, 0, 1, 0, 0.01, 270);
+    createRoundSlider('#effect1-send', effectSend1, '#effect1send-input', 'min-range', 14, 5, 0, 1, 0, 0.01, 270);
+    createRoundSlider('#effect2-gain', effect2Gain, '#effect2-input', 'min-range', 15, 5, 0, 1, 0, 0.01, 270);
+    createRoundSlider('#effect2-send', effectSend2, '#effect2send-input', 'min-range', 15, 5, 0, 1, 0, 0.01, 270);
 
     // create tempo slide from the source playbackRate
     $("#tempo-slider" ).slider({

@@ -6,10 +6,11 @@
 
 .wrapper {
     position: relative;
-    width: 960px;
-    height: 960px;
-    border: 1px solid black;
+    width: 480px;
+    height: 480px;
+    border: 1px solid rgb(50, 50, 50);
     margin: 0 auto;
+    background: black;
 }
 
 .element {
@@ -17,7 +18,7 @@
 }
 
 div#top-controls {
-    width: 600px;
+    width: 300px;
     margin: 10% auto 0;
     position: relative;
 }
@@ -29,8 +30,8 @@ div.top {
 div#slide-container {
     position: absolute;
     left: 0;
-    width: 250px;
-    height: 400px;
+    width: 125px;
+    height: 200px;
     border: 1px solid black;
     margin: auto
 }
@@ -38,52 +39,60 @@ div#slide-container {
 div#button-container {
     position: absolute;
     right: 0;
-    width: 250px;
-    height: 400px;
+    width: 125px;
+    height: 200px;
     border: 1px solid black;
 }
 
 ul#switch-container {
     position: absolute;
     bottom: 0px;
-    left: 200px;
+    left: 100px;
     padding: 0;
-    height: 350px;
-    width: 560px;
+    height: 175px;
+    width: 280px;
     border: 1px solid black;
 }
 
 .cnvBTN {
-    margin: 12px auto;
+    margin: 6px auto;
 }
 
 .cnv {
-    margin: 10px auto 0 30px;
+    margin: 5px auto 0 15px;
 }
 
 div.slide {
-    height: 100px;
-    width: 240px;
-    margin: 20px auto;
+    height: 50px;
+    width: 120px;
+    margin: 10px auto;
+    background: rgba(88, 89, 88, 1.0)
 }
 
 li.switch {
     position: absolute;
-    width: 100px;
-    height: 300px;
+    width: 50px;
+    height: 170px;
     display: inline-block;
     margin: 0 auto;
+    text-align: center;
+    background: rgba(88, 89, 88, 1.0);
 }
 
 .effect-knob {
     display: inline-block;
+    flex-grow: 1;
 }
 
 #visualizer-container {}
 
-#delay-effect-container {}
+#delay-effect-container {
+    display: flex;
+}
 
-#reverb-effect-container {}
+#reverb-effect-container {
+    display: flex;
+}
 
 .control-button {
     display: block;
@@ -99,6 +108,7 @@ li.switch {
 
 #tempo-slider-container {
     left: 30%;
+    text-align: center;
 }
 
 #eq-container {
@@ -106,8 +116,8 @@ li.switch {
 }
 
 .eq-knob {
-    width: 60px;
-    margin: 15px auto 5px;
+    width: 30px;
+    margin: 1px auto 1px;
 }
 
 input {
@@ -116,4 +126,18 @@ input {
 
 input#audioFile {
     display: initial;
+}
+
+div#effect1-gain,
+div#effect2-gain,
+div#effect1-send,
+div#effect2-send {
+    margin: auto;
+}
+
+.LED.inactive {
+    background: red;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
 }
